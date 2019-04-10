@@ -51,11 +51,11 @@ def morse():
         print "key: %s / value: %s" % (key, value)
 
     test = "JUKKA"
-    list_test = list(test)
+    list_test = list(test.lower())
 
     for letter in list_test:
-        if letter.lower() in morse_table:
-            print "letter %s = %s" % (letter.lower(), morse_table[letter.lower()])
+        if letter in morse_table:
+            print "letter %s = %s" % (letter, morse_table[letter])
 
 def main():
     morse()
