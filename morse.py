@@ -50,12 +50,12 @@ def morse():
     for key, value in morse_table.iteritems():
         print "key: %s / value: %s" % (key, value)
 
-    test = "jukka"
+    test = "JUKKA"
     list_test = list(test)
 
     for letter in list_test:
-        if letter in morse_table:
-            print "letter %s = %s" % (letter, morse_table[letter])
+        if letter.lower() in morse_table:
+            print "letter %s = %s" % (letter.lower(), morse_table[letter.lower()])
 
 def main():
     morse()
