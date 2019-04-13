@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import argparse
+import sys
+
 morse_table = {
                     "a": u"\u2022 \u2013",
                     "b": u"\u2013 \u2022 \u2022 \u2022",
@@ -52,6 +55,8 @@ def encode_to_morse(text_to_morse):
     for letter in text_to_morse:
         if letter.lower() in morse_table:
             morse_result_list.append(morse_table[letter.lower()].encode('utf-8'))
+            if letter.lower() == '.':
+                morse_result_list.append('\n ')
         else:
             if letter == ' ':
                 morse_result_list.append(' ')
@@ -75,6 +80,8 @@ def decode_to_text(morse_to_text):
     for code in test:
         if repr(code) in tmp_morse_table:
             text_result = text_result + tmp_morse_table[repr(code)]
+            if tmp_morse_table[repr(code)] == '.':
+                text_result = text_result + '\n'
         elif code == ' ':
             text_result = text_result + ' '
         else:
@@ -83,11 +90,11 @@ def decode_to_text(morse_to_text):
     return text_result.upper()
 
 
-def get_sample_text():
+def get_sample_text(text_file):
     print "***get_sample_text"
     sample_text = ""
     try:
-        with open("Text.txt", "r") as r:
+        with open(text_file, "r") as r:
             sample_text = r.read()
             print sample_text
     except EnvironmentError as e:
@@ -95,11 +102,11 @@ def get_sample_text():
     return sample_text
 
 
-def get_sample_morse():
+def get_sample_morse(test_file):
     print "***get_sample_morse"
     sample_morse = ""
     try:
-        with open("Morse.txt", "r") as r:
+        with open(test_file, "r") as r:
             sample_morse = r.read()
             print sample_morse
     except EnvironmentError as e:
@@ -122,23 +129,44 @@ def save_result(result_item):
     return status
 
 
+def simple_cli():
+    print "Select number:"
+    print "1 - text to morse"
+    print "2 - morse to text"
+    print "3 - exit"
+    user_selection = raw_input("Select: ")
+    if user_selection == str(1):
+        text_file = raw_input("Give text file name: ")
+        return text_file, 1
+    elif user_selection == str(2):
+        morse_file = raw_input("Give morse file name: ")
+        return morse_file, 2
+    else:
+        print "Goodbye"
+        sys.exit()
+
+    return
+
+
 def main():
 
-    text_to_morse = get_sample_text()  # Get the sample text
-    if text_to_morse:
-        morse_result = encode_to_morse(text_to_morse)  # Encode the sample to morse
-        status = save_result(morse_result)  # Save result to file
-        print status
-    else:
-        print "No text to encode"
-
-    print "*** morse to text"
-    morse_to_text = get_sample_morse()  # Get sample morse
-    if morse_to_text:
-        text_result = decode_to_text(morse_to_text)  # Decode the sample to text
-        print "text_result %s" % text_result
-    else:
-        print "No morse to decode"
+    test_file, selection = simple_cli()
+    if selection == 1:
+        text_to_morse = get_sample_text(test_file)  # Get the sample text
+        if text_to_morse:
+            morse_result = encode_to_morse(text_to_morse)  # Encode the sample to morse
+            status = save_result(morse_result)  # Save result to file
+            print status
+        else:
+            print "No text to encode"
+    elif selection == 2:
+        print "*** morse to text"
+        morse_to_text = get_sample_morse(test_file)  # Get sample morse
+        if morse_to_text:
+            text_result = decode_to_text(morse_to_text)  # Decode the sample to text
+            print "text_result %s" % text_result
+        else:
+            print "No morse to decode"
 
 
 if __name__ == '__main__':
