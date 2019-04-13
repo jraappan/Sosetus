@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-
-def encode_to_morse(text_to_morse):
-
-    morse_table = {
+morse_table = {
                     "a": u"\u2022 \u2013",
                     "b": u"\u2013 \u2022 \u2022 \u2022",
                     "c": u"\u2013 \u2022 \u2013 \u2022",
@@ -48,19 +45,45 @@ def encode_to_morse(text_to_morse):
                     "0": u"\u2013 \u2013 \u2013 \u2013 \u2013"
                     }
 
-    morse_result = []
+
+def encode_to_morse(text_to_morse):
+    print "***encode_to_morse"
+    morse_result = ""
+    morse_result_list = []
     for letter in text_to_morse:
         if letter.lower() in morse_table:
-            morse_result.append(morse_table[letter.lower()])
+            morse_result_list.append(morse_table[letter.lower()].encode('utf-8'))
         else:
-            print "Not valid letter %s" % (letter.lower())
+            tmp_status = False
+            #print "Not valid letter %s" % (letter.lower())
 
+    morse_result = ".".join(morse_result_list)
     return morse_result
 
 
-def get_sample_text():
+def decode_to_text(morse_to_text):
+    print "***decode_to_text"
+    text_result = []
+    tmp_morse_table = {}
+    for key in morse_table:
+        tmp_morse_table[morse_table[key]] = key
 
-    sample_text = []
+    print tmp_morse_table
+
+    for code in morse_to_text:
+        print "decode_to_text / code %s" % code
+        if code in tmp_morse_table:
+            text_result.append(tmp_morse_table[code])
+        else:
+            status = False
+            #print "Not valid mark"
+
+    return text_result
+
+
+def get_sample_text():
+    print "***get_sample_text"
+    sample_text = ""
     try:
         with open("Text.txt", "r") as r:
             sample_text = r.read()
@@ -71,7 +94,7 @@ def get_sample_text():
 
 
 def get_sample_morse():
-
+    print "***get_sample_morse"
     sample_morse = []
     try:
         with open("Morse.txt", "r") as r:
@@ -84,14 +107,14 @@ def get_sample_morse():
 
 
 def save_result(result_item):
-
+    print "***save_result"
     status = True
     try:
-        with open("Morse.txt", "w") as w:
+        with open("Morse.txt", "wb") as w:
             w.write(str(result_item))
             print "File saved"
     except Exception as e:
-        print e
+        print "save_result/error %s" % e
         status = False
 
     return status
@@ -105,13 +128,15 @@ def main():
         status = save_result(morse_result)  # Save result to file
         print status
     else:
-        print "No text to decode"
+        print "No text to encode"
 
+    print "*** morse to text"
     morse_to_text = get_sample_morse()  # Get sample morse
     if morse_to_text:
-        print morse_to_text
+        text_result = decode_to_text(morse_to_text)  # Decode the sample to text
+        print text_result
     else:
-        print "No morse to encode"
+        print "No morse to decode"
 
 
 if __name__ == '__main__':
