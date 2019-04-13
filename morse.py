@@ -48,14 +48,15 @@ morse_table = {
 
 def encode_to_morse(text_to_morse):
     print "***encode_to_morse"
-    morse_result = ""
     morse_result_list = []
     for letter in text_to_morse:
         if letter.lower() in morse_table:
             morse_result_list.append(morse_table[letter.lower()].encode('utf-8'))
         else:
-            tmp_status = False
-            #print "Not valid letter %s" % (letter.lower())
+            if letter == ' ':
+                morse_result_list.append(' ')
+            else:
+                print "Not valid letter %s" % letter
 
     morse_result = ".".join(morse_result_list)
     return morse_result
@@ -72,14 +73,14 @@ def decode_to_text(morse_to_text):
         tmp_morse_table[new_key] = key
 
     for code in test:
-        #print "decode_to_text / code %s" % code
         if repr(code) in tmp_morse_table:
             text_result = text_result + tmp_morse_table[repr(code)]
+        elif code == ' ':
+            text_result = text_result + ' '
         else:
-            status = False
-            #print "Not valid mark"
+            print "Not valid mark"
 
-    return text_result
+    return text_result.upper()
 
 
 def get_sample_text():
