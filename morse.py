@@ -121,6 +121,7 @@ def save_result(file_name, result_item):
     try:
         with open(file_name, "wb") as w:
             w.write(str(result_item))
+            w.close()
             print "File saved"
     except Exception as e:
         print "save_result/error %s" % e
@@ -130,10 +131,7 @@ def save_result(file_name, result_item):
 
 
 def simple_cli():
-    user_selection = ""
-    text_file = ""
-    morse_file = ""
-    test_file = ""
+
     print "Select number:"
     print "1 - text to morse"
     print "2 - morse to text"
@@ -142,13 +140,13 @@ def simple_cli():
     if user_selection == str(1):
         test_file = raw_input("Give text file name: ")
         if not os.path.exists(test_file):
+            test_file = ""
             print "Wrong file or path name"
-            #sys.exit()
     elif user_selection == str(2):
         test_file = raw_input("Give morse file name: ")
         if not os.path.exists(test_file):
+            test_file = ""
             print "Wrong file or path name"
-            #sys.exit()
     else:
         print "Goodbye"
         sys.exit()
@@ -159,21 +157,21 @@ def simple_cli():
 def main():
     while True:
         test_file, selection = simple_cli()
-        if selection == str(1):
+        if test_file and selection == str(1):
             text_to_morse = get_sample_text(test_file)  # Get the sample text
             if text_to_morse:
                 morse_result = encode_to_morse(text_to_morse)  # Encode the sample to morse
-                status = save_result("txt2morse.txt", morse_result)  # Save result to file
+                status = save_result("Morse.txt", morse_result)  # Save result to file
                 print status
             else:
                 print "No text to encode"
-        elif selection == str(2):
+        elif test_file and selection == str(2):
             print "*** morse to text"
             morse_to_text = get_sample_morse(test_file)  # Get sample morse
             if morse_to_text:
                 text_result = decode_to_text(morse_to_text)  # Decode the sample to text
                 print "text_result %s" % text_result
-                status = save_result("morse2txt.txt", text_result)  # Save result to file
+                status = save_result("Text.txt", text_result)  # Save result to file
             else:
                 print "No morse to decode"
 
