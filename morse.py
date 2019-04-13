@@ -2,7 +2,7 @@
 # coding=utf-8
 
 
-def morse():
+def encode_to_morse(text_to_morse):
 
     morse_table = {
                     "a": u"\u2022 \u2013",
@@ -47,18 +47,71 @@ def morse():
                     "9": u"\u2013 \u2013 \u2013 \u2013 \u2022",
                     "0": u"\u2013 \u2013 \u2013 \u2013 \u2013"
                     }
-    for key, value in morse_table.iteritems():
-        print "key: %s / value: %s" % (key, value)
 
-    test = "JUKKA"
-    list_test = list(test.lower())
+    morse_result = []
+    for letter in text_to_morse:
+        if letter.lower() in morse_table:
+            morse_result.append(morse_table[letter.lower()])
+        else:
+            print "Not valid letter %s" % (letter.lower())
 
-    for letter in list_test:
-        if letter in morse_table:
-            print "letter %s = %s" % (letter, morse_table[letter])
+    return morse_result
+
+
+def get_sample_text():
+
+    sample_text = []
+    try:
+        with open("Text.txt", "r") as r:
+            sample_text = r.read()
+            print sample_text
+    except EnvironmentError as e:
+        print e
+    return sample_text
+
+
+def get_sample_morse():
+
+    sample_morse = []
+    try:
+        with open("Morse.txt", "r") as r:
+            sample_morse = r.read()
+            print sample_morse
+    except EnvironmentError as e:
+        print e
+
+    return sample_morse
+
+
+def save_result(result_item):
+
+    status = True
+    try:
+        with open("Morse.txt", "w") as w:
+            w.write(str(result_item))
+            print "File saved"
+    except Exception as e:
+        print e
+        status = False
+
+    return status
+
 
 def main():
-    morse()
+
+    text_to_morse = get_sample_text()  # Get the sample text
+    if text_to_morse:
+        morse_result = encode_to_morse(text_to_morse)  # Encode the sample to morse
+        status = save_result(morse_result)  # Save result to file
+        print status
+    else:
+        print "No text to decode"
+
+    morse_to_text = get_sample_morse()  # Get sample morse
+    if morse_to_text:
+        print morse_to_text
+    else:
+        print "No morse to encode"
 
 
 if __name__ == '__main__':
