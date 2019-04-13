@@ -63,17 +63,18 @@ def encode_to_morse(text_to_morse):
 
 def decode_to_text(morse_to_text):
     print "***decode_to_text"
-    text_result = []
+    text_result = ""
     tmp_morse_table = {}
+
+    test = morse_to_text.split('.')
     for key in morse_table:
-        tmp_morse_table[morse_table[key]] = key
+        new_key = repr(morse_table[key].encode('utf-8'))
+        tmp_morse_table[new_key] = key
 
-    print tmp_morse_table
-
-    for code in morse_to_text:
-        print "decode_to_text / code %s" % code
-        if code in tmp_morse_table:
-            text_result.append(tmp_morse_table[code])
+    for code in test:
+        #print "decode_to_text / code %s" % code
+        if repr(code) in tmp_morse_table:
+            text_result = text_result + tmp_morse_table[repr(code)]
         else:
             status = False
             #print "Not valid mark"
@@ -95,7 +96,7 @@ def get_sample_text():
 
 def get_sample_morse():
     print "***get_sample_morse"
-    sample_morse = []
+    sample_morse = ""
     try:
         with open("Morse.txt", "r") as r:
             sample_morse = r.read()
@@ -134,7 +135,7 @@ def main():
     morse_to_text = get_sample_morse()  # Get sample morse
     if morse_to_text:
         text_result = decode_to_text(morse_to_text)  # Decode the sample to text
-        print text_result
+        print "text_result %s" % text_result
     else:
         print "No morse to decode"
 
