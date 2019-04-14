@@ -3,6 +3,9 @@
 
 import os
 import sys
+import logging
+
+logging.basicConfig(filename='morse.log', level=logging.DEBUG)
 
 morse_table = {
                     "a": u"\u2022 \u2013",
@@ -50,42 +53,54 @@ morse_table = {
 
 
 def encode_to_morse(text_to_morse):
-    print "***encode_to_morse"
+    """
+    encode_to_morse() -function encode the given text to morse string.
+    :param text_to_morse: text string
+    :return: morse_result as morse string
+    """
+    logging.info("encode_to_morse()")
     morse_result_list = []
-    for letter in text_to_morse:
-        if letter.lower() in morse_table:
-            morse_result_list.append(morse_table[letter.lower()].encode('utf-8'))
-            if letter.lower() == '.':
-                morse_result_list.append('\n ')
-        else:
-            if letter == ' ':
-                morse_result_list.append(' ')
+    morse_result = ""
+    if text_to_morse:
+        for letter in text_to_morse:
+            if letter.lower() in morse_table:  # checks if letter in code table
+                morse_result_list.append(morse_table[letter.lower()].encode('utf-8'))
+                if letter.lower() == '.':
+                    morse_result_list.append('\n ')
             else:
-                print "Not valid letter %s" % letter
+                if letter == ' ':  # checks if the letter is white space and adds it as it
+                    morse_result_list.append(' ')
+                else:
+                    logging.debug("encode_to_morse / not valid letter %s" % letter.encode('hex'))
 
-    morse_result = ".".join(morse_result_list)
+        morse_result = ".".join(morse_result_list)  # adds dot to separate the morse marks
     return morse_result
 
 
 def decode_to_text(morse_to_text):
-    print "***decode_to_text"
+    """
+    decode_to_text() -function decodes given morse strin to text string
+    :param morse_to_text: morse string
+    :return: text_result.upper(): text string converted to UPPER CASE
+    """
+    logging.info("decode_to_text()")
     text_result = ""
     tmp_morse_table = {}
+    if morse_to_text:
+        test = morse_to_text.split('.')  # makes list about the morse string
+        for key in morse_table:
+            new_key = repr(morse_table[key].encode('utf-8'))
+            tmp_morse_table[new_key] = key
 
-    test = morse_to_text.split('.')
-    for key in morse_table:
-        new_key = repr(morse_table[key].encode('utf-8'))
-        tmp_morse_table[new_key] = key
-
-    for code in test:
-        if repr(code) in tmp_morse_table:
-            text_result = text_result + tmp_morse_table[repr(code)]
-            if tmp_morse_table[repr(code)] == '.':
-                text_result = text_result + '\n'
-        elif code == ' ':
-            text_result = text_result + ' '
-        else:
-            print "Not valid mark"
+        for code in test:
+            if repr(code) in tmp_morse_table:
+                text_result = text_result + tmp_morse_table[repr(code)]
+                if tmp_morse_table[repr(code)] == '.':
+                    text_result = text_result + '\n'
+            elif code == ' ':
+                text_result = text_result + ' '
+            else:
+                logging.debug("decode_to_text / not valid mark %s" % code.encode('hex'))
 
     return text_result.upper()
 
@@ -121,7 +136,6 @@ def save_result(file_name, result_item):
     try:
         with open(file_name, "wb") as w:
             w.write(str(result_item))
-            w.close()
             print "File saved"
     except Exception as e:
         print "save_result/error %s" % e
@@ -131,7 +145,11 @@ def save_result(file_name, result_item):
 
 
 def simple_cli():
-
+    """
+    simple_cli() is simle command line interface
+    :return: test_file: file to encode/decode,
+             user_selection: user selection (1-3), see below
+    """
     print "Select number:"
     print "1 - text to morse"
     print "2 - morse to text"
