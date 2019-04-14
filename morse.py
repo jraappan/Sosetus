@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
-
+"""
+This is a simple program that converts English text to Morse code and vice versa.
+"""
 import os
 import sys
 import re
@@ -171,23 +173,23 @@ def simple_cli():
     :return: test_file: file to encode/decode,
              user_selection: user selection (1-3), see below
     """
-    print ("Select number:")
-    print ("1 - text to morse")
-    print ("2 - morse to text")
-    print ("3 - exit")
+    print("Select number:")
+    print("1 - text to morse")
+    print("2 - morse to text")
+    print("3 - exit")
     user_selection = raw_input("Select: ")
     if user_selection == str(1):
         test_file = raw_input("Give text file name: ")
         if not os.path.exists(test_file):
             test_file = ""
-            print ("Wrong file or path name")
+            print("Wrong file or path name")
     elif user_selection == str(2):
         test_file = raw_input("Give morse file name: ")
         if not os.path.exists(test_file):
             test_file = ""
-            print ("Wrong file or path name")
+            print("Wrong file or path name")
     else:
-        print ("Goodbye")
+        print("Goodbye")
         sys.exit()
 
     return test_file, user_selection  # returns file path name and user selection
@@ -204,31 +206,31 @@ def main():
             if text_to_morse:
                 morse_result = encode_to_morse(text_to_morse)  # encodes the sample to morse
                 if morse_result:
-                    print ("Text to morse: \n %s" % morse_result)
+                    print("Text to morse: \n %s" % morse_result)
                     status = save_result("Morse.txt", morse_result)  # saves result to file
                     if status:
-                        print ("File saved")
+                        print("File saved")
                     else:
-                        print ("Error in file saving")
+                        print("Error in file saving")
                 else:
-                    print ("Nothing to encode")
+                    print("Nothing to encode")
             else:
-                print ("No text to encode")
+                print("No text to encode")
         elif test_file and selection == str(2):  # checks morse file and use selection
             morse_to_text = get_sample_morse(test_file)  # get sample morse
             if morse_to_text:
                 text_result = decode_to_text(morse_to_text)  # decodes the sample to text
                 if text_result:
-                    print ("Morse to text: \n %s" % text_result)
+                    print("Morse to text: \n %s" % text_result)
                     status = save_result("Text.txt", text_result)  # saves result to file
                     if status:
-                        print ("File saved")
+                        print("File saved")
                     else:
-                        print ("Error in file saving")
+                        print("Error in file saving")
                 else:
-                    print ("Nothing to decode")
+                    print("Nothing to decode")
             else:
-                print ("No morse to decode")
+                print("No morse to decode")
 
 
 if __name__ == '__main__':
