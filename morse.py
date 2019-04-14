@@ -3,9 +3,10 @@
 
 import os
 import sys
+import re
 import logging
 
-logging.basicConfig(filename='morse.log', level=logging.DEBUG)
+logging.basicConfig(filename='morse.log', level=logging.INFO)
 
 # morse key table for encoding and decoding
 morse_key_table = {
@@ -118,9 +119,12 @@ def get_sample_text(text_file):
     try:
         with open(text_file, "r") as r:  # opens the file to read
             sample_text = r.read()  # saves file content
+            if not re.match('([A-Za-z0-9])', sample_text):  # checks that sample is valid text
+                sample_text = ""
     except EnvironmentError as e:
-        logging.debug("get_sample_text / error in reading the file {!s}".format(e))
-    return sample_text  # returns content of file as string
+        logging.exception("get_sample_text / error in reading the file")
+
+    return sample_text
 
 
 def get_sample_morse(test_file):
@@ -134,10 +138,12 @@ def get_sample_morse(test_file):
     try:
         with open(test_file, "r") as r:  # open the file read
             sample_morse = r.read()  # saves file content
+            if re.match('([A-Za-z0-9])', sample_morse):  # checks that sample string is valid
+                sample_morse = ""
     except EnvironmentError as e:
-        logging.debug("get_sample_morse / error in reading the file {!s}".format(e))
+        logging.exception("get_sample_morse / error in reading the file")
 
-    return sample_morse  # returns content of file as string
+    return sample_morse
 
 
 def save_result(file_name, result_item):
@@ -165,23 +171,23 @@ def simple_cli():
     :return: test_file: file to encode/decode,
              user_selection: user selection (1-3), see below
     """
-    print "Select number:"
-    print "1 - text to morse"
-    print "2 - morse to text"
-    print "3 - exit"
+    print ("Select number:")
+    print ("1 - text to morse")
+    print ("2 - morse to text")
+    print ("3 - exit")
     user_selection = raw_input("Select: ")
     if user_selection == str(1):
         test_file = raw_input("Give text file name: ")
         if not os.path.exists(test_file):
             test_file = ""
-            print "Wrong file or path name"
+            print ("Wrong file or path name")
     elif user_selection == str(2):
         test_file = raw_input("Give morse file name: ")
         if not os.path.exists(test_file):
             test_file = ""
-            print "Wrong file or path name"
+            print ("Wrong file or path name")
     else:
-        print "Goodbye"
+        print ("Goodbye")
         sys.exit()
 
     return test_file, user_selection  # returns file path name and user selection
@@ -197,26 +203,32 @@ def main():
             text_to_morse = get_sample_text(test_file)  # gets the sample text
             if text_to_morse:
                 morse_result = encode_to_morse(text_to_morse)  # encodes the sample to morse
-                print "Text to morse: \n %s" % morse_result
-                status = save_result("Morse.txt", morse_result)  # saves result to file
-                if status:
-                    print "File saved"
+                if morse_result:
+                    print ("Text to morse: \n %s" % morse_result)
+                    status = save_result("Morse.txt", morse_result)  # saves result to file
+                    if status:
+                        print ("File saved")
+                    else:
+                        print ("Error in file saving")
                 else:
-                    print "Error in file saving"
+                    print ("Nothing to encode")
             else:
-                print "No text to encode"
+                print ("No text to encode")
         elif test_file and selection == str(2):  # checks morse file and use selection
             morse_to_text = get_sample_morse(test_file)  # get sample morse
             if morse_to_text:
                 text_result = decode_to_text(morse_to_text)  # decodes the sample to text
-                print "Morse to text: \n %s" % text_result
-                status = save_result("Text.txt", text_result)  # saves result to file
-                if status:
-                    print "File saved"
+                if text_result:
+                    print ("Morse to text: \n %s" % text_result)
+                    status = save_result("Text.txt", text_result)  # saves result to file
+                    if status:
+                        print ("File saved")
+                    else:
+                        print ("Error in file saving")
                 else:
-                    print "Error in file saving"
+                    print ("Nothing to decode")
             else:
-                print "No morse to decode"
+                print ("No morse to decode")
 
 
 if __name__ == '__main__':
